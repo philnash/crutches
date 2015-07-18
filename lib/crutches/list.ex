@@ -1,8 +1,6 @@
 defmodule Crutches.List do
   @type t :: List
   @type i :: Integer
-  @type f :: Function
-  @type a :: Any
 
   @doc ~S"""
   Returns a copy of the List without the specified elements.
@@ -152,6 +150,9 @@ defmodule Crutches.List do
 
   ## Examples
 
+      iex> List.split([], 1)
+      [[]]
+
       iex> List.split([1, 2, 3, 4, 5], 3)
       [[1, 2], [4, 5]]
 
@@ -163,15 +164,25 @@ defmodule Crutches.List do
 
       iex> List.split([1, 2], fn(x) -> rem(x, 3) == 0 end)
       [[1, 2]]
-  """
-  @spec split(t, f) :: [t]
-  def split(list, function) when is_function(function) do
 
+      iex> List.split(["a", "b", "c"], "b")
+      [["a"], ["c"]]
+  """
+  @spec split(t, Function) :: t
+  def split(list, function) when is_function(function) do
+    reducer = fn(x, acc) ->
+      if function.(x) do
+        List.insert_at(acc, -1, [])
+      else
+        List.replace_at(acc, -1, List.insert_at(List.last(acc), -1, x))
+      end
+    end
+    Enum.reduce(list, [[]], reducer)
   end
 
-  @spec split(t, a) :: [t]
+  @spec split(t, Any) :: [t]
   def split(list, item) do
-
+    split(list, fn(x) -> x == item end)
   end
 
 
