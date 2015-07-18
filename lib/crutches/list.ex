@@ -184,6 +184,4 @@ defmodule Crutches.List do
   def split(list, item) do
     split(list, fn(x) -> x == item end)
   end
-
-
 end
