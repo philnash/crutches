@@ -1,6 +1,8 @@
 defmodule Crutches.List do
   @type t :: List
   @type i :: Integer
+  @type f :: Function
+  @type a :: Any
 
   @doc ~S"""
   Returns a copy of the List without the specified elements.
@@ -75,16 +77,16 @@ defmodule Crutches.List do
 
       iex> List.to_sentence([])
       ""
-      
+
       iex> List.to_sentence(["one"])
       "one"
 
       iex> List.to_sentence(["one", "two"])
       "one and two"
-      
+
       iex> List.to_sentence(["one", "two", "three"])
       "one, two, and three"
-     
+
       iex> List.to_sentence(["one", "two"], [{:passing, "invalid option"}])
       ** (ArgumentError) Unknown key passing
 
@@ -111,7 +113,7 @@ defmodule Crutches.List do
 
       iex> es = [support: [array: [words_connector: " o ", two_words_connector: " y ", last_word_connector: " o al menos "]]]
       iex> List.to_sentence(['uno', 'dos', 'tres'], [{:locale, es}])
-      "uno o dos o al menos tres" 
+      "uno o dos o al menos tres"
 
   """
   @spec to_sentence(t) :: t
@@ -127,7 +129,7 @@ defmodule Crutches.List do
       {:two_words_connector, " and "},
       {:last_word_connector, ", and "}
     ]
-    
+
     new_options = Keyword.merge(default_connectors, options)
     if new_options[:locale] do
       new_options = Keyword.merge(new_options, options[:locale][:support][:array])
@@ -143,4 +145,34 @@ defmodule Crutches.List do
         "#{Enum.join(Enum.reverse(tl(Enum.reverse(words))), new_options[:words_connector])}#{new_options[:last_word_connector]}#{List.last(words)}"
     end
   end
+
+  @doc ~S"""
+  Divides the List into one or more sublists based on a delimiting +value+
+  or the result of a function.
+
+  ## Examples
+
+      iex> List.split([1, 2, 3, 4, 5], 3)
+      [[1, 2], [4, 5]]
+
+      iex> List.split([1, 2, 3], 4)
+      [[1, 2, 3]]
+
+      iex> List.split(Enum.to_list(1..10), fn(x) -> rem(x, 3) == 0 end)
+      [[1, 2], [4, 5], [7, 8], [10]]
+
+      iex> List.split([1, 2], fn(x) -> rem(x, 3) == 0 end)
+      [[1, 2]]
+  """
+  @spec split(t, f) :: [t]
+  def split(list, function) when is_function(function) do
+
+  end
+
+  @spec split(t, a) :: [t]
+  def split(list, item) do
+
+  end
+
+
 end
